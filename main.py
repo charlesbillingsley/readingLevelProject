@@ -132,7 +132,8 @@ def strip_punctuation(tokens):
     return words_only
 
 
-def calculate_reading_level():
+def calculate_reading_level(number_of_words, number_of_sentences,
+                            number_of_syllables):
     """
     Calculates the reading level of the file using the Flesh-Kincaid Reading
     Ease Formula.
@@ -140,13 +141,20 @@ def calculate_reading_level():
     The formula is as follows:
         206.835 - 1.015 (Total Words / Total Sentences)
             - 84.6 (Total Syllables / Total Words)
-    """
-    # Todo: figure out what needs to be passed in.
-    # Todo: add the calculation given in class to this method
 
+    :param number_of_words: The number of words in the piece
+    :param number_of_sentences: The number of sentences in the piece
+    :param number_of_syllables: The number of syllables in the piece
+    :return: The calculated reading level from the Flesh-Kincaid Reading
+    Ease Formula
+    """
     first_flesh_kincaid_constant = 206.835
     second_flesh_kincaid_constant = 1.015
     third_flesh_kincaid_constant = 84.6
+
+    return first_flesh_kincaid_constant - second_flesh_kincaid_constant * (
+        number_of_words / number_of_sentences) - third_flesh_kincaid_constant * (
+        number_of_syllables / number_of_words)
 
 
 def main():
@@ -165,7 +173,6 @@ def main():
             break
 
         full_input += sentence
-        print(str(sentence))
         total_sentences += 1
 
         tokens = nltk.word_tokenize(sentence)
@@ -174,17 +181,14 @@ def main():
 
         total_syllables += get_syllables(words)
 
+    reading_level_number = calculate_reading_level(total_words,
+                                                   total_sentences,
+                                                   total_syllables)
+
     print("Total Sentences: " + str(total_sentences))
     print("Total Words: " + str(total_words))
-    print("Total syllables " + str(total_syllables))
-
-    # Example of tokenizing from the nltk documentation
-    # print(sentence.strip('\n'))
-    # tokens = nltk.word_tokenize(sentence)
-    # print(tokens)
-    # tagged = nltk.pos_tag(tokens)
-    # print(tagged[0:6])
-    # print('\n')
+    print("Total Syllables " + str(total_syllables))
+    print("Reading Level Value " + str(reading_level_number))
 
 
 if __name__ == "__main__":
