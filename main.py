@@ -1,5 +1,5 @@
-import sys
 import re
+import sys
 
 import nltk
 from nltk.corpus import cmudict
@@ -132,11 +132,11 @@ def strip_punctuation(tokens):
     return words_only
 
 
-def calculate_reading_level(number_of_words, number_of_sentences,
-                            number_of_syllables):
+def calculate_reading_level_score(number_of_words, number_of_sentences,
+                                  number_of_syllables):
     """
-    Calculates the reading level of the file using the Flesh-Kincaid Reading
-    Ease Formula.
+    Calculates the reading level score of the file using the Flesh-Kincaid
+    Reading Ease Formula.
 
     The formula is as follows:
         206.835 - 1.015 (Total Words / Total Sentences)
@@ -145,7 +145,7 @@ def calculate_reading_level(number_of_words, number_of_sentences,
     :param number_of_words: The number of words in the piece
     :param number_of_sentences: The number of sentences in the piece
     :param number_of_syllables: The number of syllables in the piece
-    :return: The calculated reading level from the Flesh-Kincaid Reading
+    :return: The calculated reading level score from the Flesh-Kincaid Reading
     Ease Formula
     """
     first_flesh_kincaid_constant = 206.835
@@ -167,6 +167,7 @@ def main():
     global total_syllables
 
     while True:
+        # Parse each sentence
         sentence = get_next_line()
 
         if sentence == "!!!End of File!!!":
@@ -181,14 +182,14 @@ def main():
 
         total_syllables += get_syllables(words)
 
-    reading_level_number = calculate_reading_level(total_words,
-                                                   total_sentences,
-                                                   total_syllables)
+    reading_level_score = calculate_reading_level_score(total_words,
+                                                        total_sentences,
+                                                        total_syllables)
 
     print("Total Sentences: " + str(total_sentences))
     print("Total Words: " + str(total_words))
     print("Total Syllables " + str(total_syllables))
-    print("Reading Level Value " + str(reading_level_number))
+    print("Reading Level Score " + str(reading_level_score))
 
 
 if __name__ == "__main__":
