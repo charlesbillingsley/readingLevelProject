@@ -153,8 +153,27 @@ def calculate_reading_level_score(number_of_words, number_of_sentences,
     third_flesh_kincaid_constant = 84.6
 
     return first_flesh_kincaid_constant - second_flesh_kincaid_constant * (
-        number_of_words / number_of_sentences) - third_flesh_kincaid_constant * (
-        number_of_syllables / number_of_words)
+            number_of_words / number_of_sentences) - third_flesh_kincaid_constant * (
+                   number_of_syllables / number_of_words)
+
+
+def convert_score_to_reading_level(score):
+    if 100.0 >= score >= 90.0:
+        return "5th Grade Reading Level"
+    elif 90.0 > score >= 80.0:
+        return "6th Grade Reading Level"
+    elif 80.0 > score >= 70.0:
+        return "7th Grade Reading Level"
+    elif 70.0 > score >= 60.0:
+        return "8th & 9th Grade Reading Level"
+    elif 60.0 > score >= 50.0:
+        return "10th to 12th Grade Reading Level"
+    elif 50.0 > score >= 30.0:
+        return "College Reading Level"
+    elif 30.0 > score >= 0:
+        return "College Graduate Reading Level"
+    else:  # Got a number greater than 100, or less than 0.
+        return "A reading level so complex, it cannot be classified."
 
 
 def main():
@@ -174,7 +193,6 @@ def main():
             break
 
         full_input += sentence
-        total_sentences += 1
 
         tokens = nltk.word_tokenize(sentence)
         words = strip_punctuation(tokens)
@@ -182,14 +200,23 @@ def main():
 
         total_syllables += get_syllables(words)
 
+    with open(input_file) as file:
+        file_content = file.read()
+
+    # Gets rough estimate of number of sentences.  Would mess up if sentence was "L.A.P.D. OPEN UP!!".
+    total_sentences = file_content.count(".") + file_content.count("?") + file_content.count("!")
+
     reading_level_score = calculate_reading_level_score(total_words,
                                                         total_sentences,
                                                         total_syllables)
+
+    reading_level = convert_score_to_reading_level(reading_level_score)
 
     print("Total Sentences: " + str(total_sentences))
     print("Total Words: " + str(total_words))
     print("Total Syllables " + str(total_syllables))
     print("Reading Level Score " + str(reading_level_score))
+    print("Reading Level: " + str(reading_level))
 
 
 if __name__ == "__main__":
