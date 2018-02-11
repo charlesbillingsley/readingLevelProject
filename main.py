@@ -162,7 +162,7 @@ def get_number_of_sentences(file_text):
 def calculate_reading_level_score(number_of_words, number_of_sentences,
                                   number_of_syllables):
     """
-    Calculates the reading level score of the file using the Flesh-Kincaid
+    Calculates the reading level score of the file using the Flesch-Kincaid
     Reading Ease Formula.
 
     The formula is as follows:
@@ -172,24 +172,24 @@ def calculate_reading_level_score(number_of_words, number_of_sentences,
     :param number_of_words: The number of words in the piece
     :param number_of_sentences: The number of sentences in the piece
     :param number_of_syllables: The number of syllables in the piece
-    :return: The calculated reading level score from the Flesh-Kincaid Reading
+    :return: The calculated reading level score from the Flesch-Kincaid Reading
     Ease Formula
     """
-    first_flesh_kincaid_constant = 206.835
-    second_flesh_kincaid_constant = 1.015
-    third_flesh_kincaid_constant = 84.6
+    first_flesch_kincaid_constant = 206.835
+    second_flesch_kincaid_constant = 1.015
+    third_flesch_kincaid_constant = 84.6
 
-    return first_flesh_kincaid_constant - second_flesh_kincaid_constant * (
-        number_of_words / number_of_sentences) - third_flesh_kincaid_constant * (
+    return first_flesch_kincaid_constant - second_flesch_kincaid_constant * (
+        number_of_words / number_of_sentences) - third_flesch_kincaid_constant * (
         number_of_syllables / number_of_words)
 
 
 def convert_score_to_reading_level(score):
     """
-    Converts the score from the Flesh-Kincaid Reading Ease Formula into the
+    Converts the score from the Flesch-Kincaid Reading Ease Formula into the
     equivalent reading level.
 
-    :param score: The score calculated from the Flesh-Kincaid Reading Ease Formula
+    :param score: The score calculated from the Flesch-Kincaid Reading Ease Formula
     :return: The description of the reading level
     """
     if 100.0 >= score >= 90.0:
