@@ -1,6 +1,6 @@
 import re
 import sys
-
+import ChangeLevel
 import nltk
 from nltk.corpus import cmudict
 
@@ -30,7 +30,8 @@ full_input = ''
 total_words = 0
 total_sentences = 0
 total_syllables = 0
-
+target_reading_level = ''
+shouldModify = False
 
 def get_next_line():
     """
@@ -257,21 +258,29 @@ def main():
     print("Reading Level Score " + str(reading_level_score))
     print("Reading Level: " + str(reading_level))
 
+    if shouldModify:
+        print("Changing Reading Level to " + target_reading_level)
+        ChangeLevel.change_level({'target_reading_level': target_reading_level})
 
 if __name__ == "__main__":
 
     # Check for an input file
-    if len(sys.argv) < 2:
-        print("Input file required")
-        print("On EOS Try: python3 main.py input.txt")
-        sys.exit(2)
-    elif len(sys.argv) > 2:
-        print("Too many arguments")
-        print("On EOS Try: python3 main.py input.txt")
-        sys.exit(2)
-    else:
-        # Get file
+    if len(sys.argv) == 2:
+        # Analyze reading level data
         input_file = sys.argv[1]
+    elif len(sys.argv) == 3:
+        # Analyze reading data and modify to reach target
+        input_file = sys.argv[1]
+        shouldModify = True
+        target_reading_level = sys.argv[2]
+    elif len(sys.argv) < 2:
+        print("Too few arguments provided")
+        print("On EOS Try: python3 main.py input.txt {targetLevel}")
+        sys.exit(2)
+    elif len(sys.argv) > 3:
+        print("Too many arguments")
+        print("On EOS Try: python3 main.py input.txt {targetLevel}")
+        sys.exit(2)
 
     # Run the program
     main()
