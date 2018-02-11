@@ -123,8 +123,8 @@ def strip_punctuation(tokens):
     :param tokens: The list of words and punctuation from nltk
     :return: A list of words without punctuation
     """
-
-    words_or_digits_only_regex = re.compile('.*[A-Za-z0-9].*')
+    # print(str(tokens))
+    words_or_digits_only_regex = re.compile('.*\w+.*')
 
     # If the word matches the regex, save it. Else ignore it
     words_only = [word for word in tokens if
