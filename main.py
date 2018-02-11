@@ -24,6 +24,7 @@ Authors:
 
 dictionary = cmudict.dict()
 input_file = ''
+file_content = ''
 current_line_number = 0
 full_input = ''
 total_words = 0
@@ -132,6 +133,32 @@ def strip_punctuation(tokens):
     return words_only
 
 
+def get_number_of_sentences(file_text):
+    """
+    Calculates the number of sentences based on the punctuation using regex.
+
+    :param file_text: The text in the file
+    :return: The number of sentences
+    """
+
+    ''' 
+    Regex that looks for punctuation, followed by an optional
+    quotation mark, followed by white space and/or a new line, followed by
+    a capital letter or a quotation mark. Should match text such as 
+    the following:
+        . "
+        . T
+        ."\n"        
+    '''
+    end_of_sentence_regex = re.compile('(([.!?])"*(\s+|\n+)([A-Z]|"))')
+
+    number_of_sentences = len(
+        re.findall(end_of_sentence_regex, file_text)
+    ) + 1  # +1 accounts for the last sentence
+
+    return number_of_sentences
+
+
 def calculate_reading_level_score(number_of_words, number_of_sentences,
                                   number_of_syllables):
     """
@@ -153,11 +180,18 @@ def calculate_reading_level_score(number_of_words, number_of_sentences,
     third_flesh_kincaid_constant = 84.6
 
     return first_flesh_kincaid_constant - second_flesh_kincaid_constant * (
-            number_of_words / number_of_sentences) - third_flesh_kincaid_constant * (
-                   number_of_syllables / number_of_words)
+        number_of_words / number_of_sentences) - third_flesh_kincaid_constant * (
+        number_of_syllables / number_of_words)
 
 
 def convert_score_to_reading_level(score):
+    """
+    Converts the score from the Flesh-Kincaid Reading Ease Formula into the
+    equivalent reading level.
+
+    :param score: The score calculated from the Flesh-Kincaid Reading Ease Formula
+    :return: The description of the reading level
+    """
     if 100.0 >= score >= 90.0:
         return "5th Grade Reading Level"
     elif 90.0 > score >= 80.0:
@@ -184,6 +218,10 @@ def main():
     global total_words
     global total_sentences
     global total_syllables
+    global file_content
+
+    with open(input_file) as file:
+        file_content = file.read()
 
     while True:
         # Parse each sentence
@@ -200,11 +238,7 @@ def main():
 
         total_syllables += get_syllables(words)
 
-    with open(input_file) as file:
-        file_content = file.read()
-
-    # Gets rough estimate of number of sentences.  Would mess up if sentence was "L.A.P.D. OPEN UP!!".
-    total_sentences = file_content.count(".") + file_content.count("?") + file_content.count("!")
+    total_sentences = get_number_of_sentences(file_content)
 
     reading_level_score = calculate_reading_level_score(total_words,
                                                         total_sentences,
