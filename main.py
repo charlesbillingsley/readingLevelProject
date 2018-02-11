@@ -123,12 +123,17 @@ def strip_punctuation(tokens):
     :param tokens: The list of words and punctuation from nltk
     :return: A list of words without punctuation
     """
-    # print(str(tokens))
     words_or_digits_only_regex = re.compile('.*\w+.*')
 
     # If the word matches the regex, save it. Else ignore it
-    words_only = [word for word in tokens if
-                  words_or_digits_only_regex.match(word)]
+    words_only_with_contractions = [word for word in tokens if
+                                    words_or_digits_only_regex.match(word)]
+
+    remove_contractions_regex = re.compile("\w*'\w*")
+
+    # Remove all the contractions as nltk counts them as 2 words
+    words_only = [word for word in words_only_with_contractions if not
+                  remove_contractions_regex.match(word)]
 
     return words_only
 
