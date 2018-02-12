@@ -4,10 +4,9 @@ import ChangeLevel
 import nltk
 from nltk.corpus import cmudict
 
-""" Reading level analyzer and adapter.
+""" Reading level analyzer.
 
-This module reads in text from a file, analyzes the reading level, and allows 
-for the increase or decrease of reading difficulty.
+This module reads in text from a file and analyzes the reading level.
 
 Example:
     The program can be run by the following command::
@@ -32,6 +31,7 @@ total_sentences = 0
 total_syllables = 0
 target_reading_level = ''
 shouldModify = False
+
 
 def get_next_line():
     """
@@ -133,8 +133,8 @@ def strip_punctuation(tokens):
     remove_contractions_regex = re.compile("\w*'\w*")
 
     # Remove all the contractions as nltk counts them as 2 words
-    words_only = [word for word in words_only_with_contractions if not
-                  remove_contractions_regex.match(word)]
+    words_only = [word for word in words_only_with_contractions if
+                  not remove_contractions_regex.match(word)]
 
     return words_only
 
@@ -186,7 +186,8 @@ def calculate_reading_level_score(number_of_words, number_of_sentences,
     third_flesch_kincaid_constant = 84.6
 
     return first_flesch_kincaid_constant - second_flesch_kincaid_constant * (
-        number_of_words / number_of_sentences) - third_flesch_kincaid_constant * (
+        number_of_words / number_of_sentences) \
+        - third_flesch_kincaid_constant * (
         number_of_syllables / number_of_words)
 
 
@@ -195,7 +196,8 @@ def convert_score_to_reading_level(score):
     Converts the score from the Flesch-Kincaid Reading Ease Formula into the
     equivalent reading level.
 
-    :param score: The score calculated from the Flesch-Kincaid Reading Ease Formula
+    :param score: The score calculated from the
+                    Flesch-Kincaid Reading Ease Formula
     :return: The description of the reading level
     """
     if 100.0 >= score >= 90.0:
@@ -260,7 +262,9 @@ def main():
 
     if shouldModify:
         print("Changing Reading Level to " + target_reading_level)
-        ChangeLevel.change_level({'target_reading_level': target_reading_level})
+        ChangeLevel.change_level(
+            {'target_reading_level': target_reading_level})
+
 
 if __name__ == "__main__":
 
