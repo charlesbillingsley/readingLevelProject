@@ -1,0 +1,243 @@
+RESULTS:
+Total Sentences: 129
+Total Words: 2815
+Total Syllables 4542
+Reading Level Score 48.183944125463
+Reading Level: College Reading Level
+
+The Android OS
+
+Today, there are nearly 2 billion smartphones users around the world, but most of them
+don’t take the time to comprehend all of the backend work that the phone’s operating system
+does to make it all possible (Kissonergis). From those 2 billion devices, Android holds an 82.8%
+market share worldwide, making it one of the most used operating systems in the history of
+computing (“Smartphone OS Market Share, 2015”). In this paper I will discuss the development
+history of Android, how it is used, how it works, comparisons to other mobile operating
+systems, such as Apple’s iOS, and my recommendation. The Android OS is the most open and
+versatile platform to develop on and use for the mobile market.
+1. Development History
+
+Android Inc. was founded in 2003 by four men, Andy Rubin, Rich Miner, Nick Sears,
+and Chris White. Before they had the notion to develop it for mobile phones, Android was meant
+to ease the connection difficulties between digital cameras and PCs (Welch). After deciding that
+the digital camera market wasn’t substantial enough, they moved their attention to mobile
+devices. The company was purchased by Google in 2005. Their end goal was to develop an open
+source platform for mobile devices. This operating systems would need to be able to run on
+multiple hardware setups. The first official release came in 2008 with Android 1.0, and has gone
+through many updates since. The operating system is based on the Linux Kernel. The current
+release is Android 6.0, known as Marshmallow.
+
+1.2 Version Updates
+
+Since the initial release Android has always used various touch controls to navigate the
+user interface; tapping, pinching, and swiping make up the main navigation and interaction
+controls. According to Google’s own Android website these are the some of the improvements
+the operating system has gone through.Version 1.0 introduced many key features, such as the
+
+Android Market, now the Google Play Store, a full web browser, Google services, a media
+player, camera support, and Wi-Fi and Bluetooth support . Version 1.5 Cupcake, included
+widgets, a copy and paste feature, and updated the Linux Kernel to 2.6.27. Version 1.6 Donut
+allowed the operating system to support multiple screen sizes and a new quick search box, which
+included results from the web and the phone’s local storage. Version 2.1 Éclair added Google
+maps navigation, the ability to customize the home screen, and speech-to- text. Version 2.2 Froyo
+came with the Dalvik JIT compiler which increased performance, added the ability to become a
+mobile hotspot, and included voice controls. Version 2.3 Gingerbread gave developers new APIs
+for gaming and Near Field Communication support. Version 3.0 Honeycomb added support for
+tablets and got rid of necessary physical buttons in favor of on-screen navigation. Version 4.0 Ice
+Cream Sandwich gave the user more control and customization. Version 4.1 Jelly Bean
+supported multiple users on one mobile device. Perhaps the biggest leap was to Android 5.0
+Lollipop, which replaced the Dalvik virtual machine for Google’s Android Runtime, or ART. It
+also supported 64-bit CPUs and saw the operating system move to televisions, watches, more
+tablets, and cars. The most recent version Marshmallow increased battery performance and
+brought back permissions for individual apps, allowing you to have more control over what
+information they have access to (&quot;The Android Story.&quot;).
+The primary focus of Android is the smartphone market. In today’s world people want to
+have access to their data and information at all times. Android, with its app store, allows the user
+to browse through tens of thousands of apps. These applications can be downloaded and installed
+in seconds and grant the user almost limitless possibilities. The smartphone of today has become
+one of the most powerful technologies because of its versatility, portability and power.
+
+2.0 How It Works
+
+The Android operating system is a Linux system, which means it is entirely built upon
+the Linux Kernel. The operating system is made up of five different layers, each hooking into the
+one below it and providing benefits the ones above (&quot;Android Architecture&quot;). However, just
+because it is based on Linux doesn’t mean Linux desktop applications can run on it. Android
+does not provide the same libraries needed to run applications from other Linux distributions
+(Hoffman). From the kernel that interfaces with the hardware to the applications that the user
+interacts with, they all are part of the operating system. This is what makes Android so unique
+and versatile. The figure below illustrates the layers of the architecture.
+
+
+
+2.1 Linux Kernel
+
+First, the Linux Kernel is the core of the operating system. A kernel is what directly
+interacts with the hardware of a computer, it manages the communication sent from the
+applications to the physical hardware, which allows the processing to take place (&quot;Android
+
+Architecture&quot;). Linux is an open source operating system, which means that anyone can make
+changes to, and develop for it at no cost (Woodford). Anyone is free to modify the kernel and
+then distribute it to consumers. In Android the kernel has control over all of the drivers and
+power management. A driver is just software that helps connect specific hardware devices
+through the operating system. Some of the drivers control the display, camera, Wi-Fi, USB,
+audio, flash memory, keypad, Bluetooth, and the binder (IPC). Since Android’s kernel provides
+such a well-designed foundation, it makes the process of moving it to new hardware much easier.
+
+2.2 Libraries
+
+The next layer up contains all of the libraries. A library is a collection of resources that
+developers can use when creating their software. It enables the different mobile devices to work
+with many different types of data (&quot;Android Architecture&quot;). The libraries are specific for each
+hardware and are written in either c or c++. The first key library is the surface manager. It
+combines off-screen buffering with the window manager. This buffering means that the apps
+can’t directly display on the screen, they have to go through the buffer where they will be
+combined with other drawings to form the final screen that the consumer will see. The media
+framework is another key library. It gives the device all of the different media codecs that are
+needed to record and playback different formats. In order to store all of its data, Android uses the
+SQLite database engine. Android also comes with the WebKit open source browser engine. It
+allows the device to use HTML and JavaScript. However, Android doesn’t use WebKit as the
+default browser, instead it is used by apps to display web pages. FreeType lets the device display
+different fonts and the SSL library can be used to secure incoming and outgoing
+communications.
+
+2.3 Runtime Environment
+
+Next, on the same level as the libraries is the Android Runtime environment, also known
+as ART, which includes the core Java libraries. ART replaced the Dalvik Runtime environment
+when Google updated the operating system to 5.0, Marshmallow. Android’s runtime
+environment converts the original class and jar files to dex files. These file are much more
+compact and efficient than the class files (Toombs). This is very important because mobile
+devices inherently have less memory than desktop computers and need to be as efficient as
+possible. This process also consumes less battery power.
+Before ART Android used JIT, or Just-in- Time compilation, but now it uses Ahead-of-
+Time compilation. This means that unlike Just-in- Time compilation, which compiles the code as
+it is executed, ART complies the applications when they are downloaded and installed onto the
+device (Toombs). When code is compiled it means that the language it was written in needs to be
+translated into the language that the actual device can understand, called machine language. This
+gets rid of the need to create a new virtual machine every time an app needs to be executed, this
+process is much faster than the Just-in- Time compilation method. The downside is that it will
+take up more space and the install time for larger apps will increase.
+2.31 Java Core Libraries
+
+Part of the Runtime Environment includes the java libraries, which are used by the
+developers to create programs that will run on Android (&quot;Android Architecture&quot;). If these
+libraries and the runtime environment didn’t exist then the developers would be forced to code in
+machine language. Rarely anyone today would want to create an app using straight binary, it
+would take too much time and effort. That is why programmers require a translator. It makes the
+job much easier, while adding some overhead to the system.
+
+2.4 Application Framework
+
+The application framework is what the applications directly communicate with. It
+contains managers that control the basic operations of the device (&quot;Android Architecture&quot;). This
+includes the activity life cycle of applications, the telephone, the devices current location, the
+various resources used, the data shared between apps, etc. Developers look at these basic tools
+and decide which ones they will need to use in order to come up their completed projects.
+
+2.5 Applications
+
+The Android applications are the top layer of the architecture. Every smartphone user
+interacts with this layer whenever they use their phone. These apps are what developers spend
+their time creating and marketing to consumers. Anyone is free to create an app and publish it.
+The applications have a great variety in what they can perform. For every task you use your
+smartphone for there is an app, whether it be your phone, calendar, email, games, or music. So,
+how do your apps work?
+The apps in Android are developed using the Java programming language. The Android
+SDK, or software development kit, compiles it down to an .apk (&quot;Application Fundamentals.&quot;).
+This is the file the Android operating system uses to install the app. In order to keep the apps
+from breaking each other, each app is contained in its own virtual machine, where is has access
+to all of the data it needs without interfering with other apps. A virtual machine simply takes one
+process or application and runs it in its own controlled environment. That way it cannot interfere
+with any other application being ran at the same time. Since Android is a multi-user Linux
+system each app is a separate user with its own user id. Permissions can be altered per app in
+order to control what each one has access to (&quot;Application Fundamentals.&quot; ). According the
+Android’s own website, “By default, every app runs in its own Linux process. Android starts the
+
+O’Connor 9
+
+process when any of the app’s components need to be executed, then shuts down the process
+when it’s no longer needed or when the system must recover memory from other apps.
+(&quot;Application Fundamentals.&quot; )” By separating the apps in different processes Android maintains
+a very secure environment. However, another feature of Android is that if allowed apps can share
+information and files. These apps must run in the same virtual machine and process as each other
+in order to do so.
+Another key feature of Android applications is its ability to manage all the memory and
+processes on its own. According to Martin from Phonedog, an app will stay in memory until it
+needs to be closed (Martin). The app will continue to run in behind the scenes, which doesn’t
+affect the battery or performance. If needed Android will automatically start to shut down apps,
+starting with the one that has been inactive the longest.
+3.0 Android vs. iOS
+
+In the world of mobile operating systems there are two heavy weights, Google’s Android
+and Apple’s iOS. Both operating systems have their pros and cons. While I can’t compare every
+single difference between Android and iOS I can focus on a few of the major differences. These
+differences include the open vs. closed models, privacy and security, cost, and overall
+performance.
+
+3.1 Open vs Closed Source
+
+Android is an open source operating system while iOS is a closed system. According to
+Hoffman, “Android is “open” in a variety of ways. For one thing, the Android operating system
+is based on code from the “Android Open Source Project,” or AOSP (Hoffman). It’s open-
+source, so people can take that source code and create custom operating systems from it.”
+Because it’s open the base Android operating system is a great place to start for developers not
+
+satisfied with either Google’s Android, or Apple’s iOS. iOS is completely closed and no one
+besides the company will ever have access to the source code, making it impossible to derive a
+new os from it.
+The other factor that comes into play when talking about open vs. closed systems is the
+amount of control the company has over each system. For example, the Google Play Store is
+much less restrictive in deciding what apps get to use the service, as long as it’s not doesn’t
+outright harm the system (Bell). Even more important is that apps on Android can come from
+anywhere. So, even if Google doesn’t approve of it you can guarantee that there is somewhere
+else to get it from. Apple’s app store is the complete opposite, it is the only place to go for apps.
+The process to get an app onto their store is much more rigorous, with stricter guidelines. The
+contents and subject matter of the app heavily influence the end decision. According to Bell,
+every app on the app store needs to be tested by a human before it ever has a chance to see the
+light of day (Bell). If you were considering developing for iOS and had a strict timeline of when
+the product needed to be launched, this process to be approved would need to be taken into
+consideration.
+
+3.2 Privacy and Security
+
+When it comes to security Android and iOS have different ways of preventing unwanted
+programs from infecting your device. According to Diffen, “Android’s applications are isolated
+from the rest of the system’s resources, unless a user specifically grants an application access
+to other features (&quot;Android vs iOS.&quot;).” As mentioned earlier, this is done by separating apps
+into their own virtual machine to prevent conflict. This doesn&#39;t mean that apps can’t ask for
+permission to personal information in order to steal it. Since the app screening process is less
+rigorous and the system is more popular than iOS, there are many more harmful apps out
+
+there. By having such a rigorous screening process for new apps, Apple’s iOS deters most
+malicious software writers from even trying to get through. The real threat comes when
+someone gets around Apple’s restrictions and installs an unapproved app.
+The privacy of both systems is questionable but iOS does a much better job of
+controlling what information apps get to have. When you install an app in Android it’s either
+all or nothing. The app gives you a list of permissions it’s requesting and that’s that
+(&quot;Android vs iOS.&quot;). Developers may abuse this to gain access to otherwise irrelevant, but
+personal, information. iOS does not have a similar system. Once installed apps may request
+for additional access but may be denied without consequence.
+3.3 Performance and Cost
+
+Apple’s iOS dominates Android in performance, but Android&#39;s vast hardware
+selection allows user to choose between price, performance, screen size, etc. According to
+Nazarian from Digital Trends, the iPhone 6s plus is around 42 percent faster than the best
+performing Android device (Nazarian). Even the top of the line Galaxy S6 Edge Plus is 60
+percent slower. However, Android makes up for the performance with their numerous
+hardware options. Unlike, iOS which is only found on Apple’s iPhone, Android phones and
+tablets come in many shapes and sizes, with variable costs and features. Although having
+more options for hardware can lead to more incompatibilities, Android has always been the
+operating system with the most choice and freedom.
+4.0 Recommendation
+
+Android is recommended if you want the extra customization, versatility, and
+freedom when comparing it to Apple’s iOS. Its open nature allows for more developers to
+create apps exactly as they envisioned them, without having to worry that Apple will deny
+
+them entry onto the platform. Developers can also take the base Android source code and
+modify it, if they feel Google is going in the wrong direction, to produce their own operating
+system. Although its privacy protection has its flaws, Android&#39;s ability to have apps
+communicate and work with each other, when allowed, just adds to the potential possibilities
+and benefits for the user. Also, the hardware selection has a lower barrier to entry because of
+the different prices for each mobile device.

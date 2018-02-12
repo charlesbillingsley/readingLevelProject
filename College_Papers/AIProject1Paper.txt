@@ -1,0 +1,117 @@
+RESULTS:
+Total Sentences: 58
+Total Words: 1355
+Total Syllables 2059
+Reading Level Score 54.567961254612555
+Reading Level: 10th to 12th Grade Reading Level
+
+Charles Billingsley
+Josh Getter
+Adam Stewart
+Josh Techentin
+ 
+Operation: Take Over the World
+
+       	With the simple goal to take over the world, each group member 
+individually sought out a certain strategy that came to their mind.  We 
+started with the initial strategy of just taking over all nearby empty 
+planets, then trying to overwhelm the opponent once all planets were occupied,
+ by just being more efficient early game, however that only gets you so far. 
+ It was easy for opponents to be more efficient with their mid-late game, and
+ just swarm us on undefended planets.
+
+       	A cool initial thought was, instead of fighting to take over planets,
+ why not just destroy them?  If we continue to go even on the number of planets
+ captured early game, and then just start destroying their planets, we should be
+ reasonably set up to be even, if not ahead.  This was especially the case if we
+ were destroying a planet that the opponent had multiple docked ships on, as they
+ would automatically die with the planet.  This strategy was particularly bad in
+ 1v1v1v1 situations, since the strategy works best when you own 50% of the map or
+ more, and in a 4-player match, you’d typically own only about 25% of the map to 
+start with.  This however, did not solve the problem of getting rushed on early, 
+and quickly having less than 50% of the map, and not being able to recover.  Since 
+ships were suiciding into a planet, it was recoverable to get back ahead after 
+falling behind, if your opponent had a decent mid-late game with their bot.
+
+       	Then we came up with the idea of being overall more defensive.  One of 
+our team members came up with the idea of having our ships circle our own planets.
+  Not a bad strategy when the enemy spreads their ships too thin—we can easily 
+defend, while still have a little offense with our spare ships.  Again though, we’re
+ hit with the problem that if we’re swarmed by a large amount of ships at once, 
+we become overwhelmed.  That, on top of the fact that ships circling the planets 
+would not react if an enemy ship got too close.  It would only be effective if the 
+enemy ran across our line of path, which could happen frequently, but only until after
+ we obtained multiple guards around the respective planet.
+
+       	Next, a member came up with the idea of just being purely random.  Random 
+algorithms can be quite efficient in situations, and in this case, we’re striking a
+ medium between defense and offense.  On top of that, it solves a side problem of 
+ship indecisiveness, as well as making it harder for opponents to predict our moves 
+and counter them.  Despite being more efficient with our decision making, and 
+commitment to certain paths, these paths themselves could be quite inefficient, since
+ it’s random.  A lot of times, a ship would dock on planet A, create a new ship, 
+which would dock on planet B and create a new ship, which would then go back to planet
+ A and dock there.  This sequence could happen multiple times in a match, soon making 
+it not worth the potential.
+
+       	At this point, we had created multiple strategies that would lose when engaged
+ upon by a large group.  So... if you can’t beat them, join them.  We continued the 
+strategy to go to nearby empty planets initially, but at the same time we’re docking 
+2-3 ships per planet, instead of just one.  This sets up the situation of having 
+potentially fewer planets initially, but many condensed together ships.  Now we can be
+ the one who engages on planets weakly defended as a swarm of ships.  Finally employing 
+this strategy solidified ourselves a mid-1k rank, but then we were back to having inefficient
+ pathing.  The inefficient pathing problem is, if we tell our ships to attack the nearest 
+enemy ship, we could end up with 10 ships heading for that direction.  When inevitably one
+ or two ships corner and destroy it.  These 10 ships then all change direction to a new one,
+ even though 8-9 aren’t doing anything other than changing direction.  This sequence would
+ continue to occur, plaguing 80% of our ships with inefficiencies when not targeting planets.
+
+       	Finally, we decide to start combining strategies, using them in situations where 
+they’ll succeed.  We’ll start with simply seeking the closest planet, and docking all 3 
+ships on it.  Newly produced ships will then be given roles, such as: harvester (docks 
+on existing planets/captures new planets), reaper (destroys enemy ships moving around), 
+ninja (destroys enemy docked ships), guardian (circles our planets), and star destroyer 
+(destroys planets that the enemy has 2+ docked ships on).  Us deciding to give ship roles
+ would help raise our decisiveness, which we’ve been striving for with randomness, but
+ without being random.  Since some of our newborn ships will be defenders, we get a 
+little defense from raids, while our two our other roles still give us semi-large raids 
+against our opponents.  We also still maintain the opportunity to destroy planets that 
+we feel the opponent is milking a lot of resources from, since that is when it’s most 
+beneficial to destroy an entire planet.  It situations where a role wouldn’t have 
+anything to do (e.g. there’s nothing to currently harvest), they would instead claim 
+a different role.
+
+      	Despite our plans to create the ultimate multi-tasking python bot… it’s awful,
+ in an amusing way.  For whatever reason, our guardians are only circling unowned planets, 
+even though we’re very clearly cycling through an array of planets that we own (and it is
+ updated every turn, in case we were to lose or gain a planet).  Our planet destroyers 
+occasionally crash to any random planet.  For some reason, our harvesters just can’t seem
+ to dock half the time, even when a planet’s dock spots aren’t full yet.  And then last
+ of all, some ships just sit there after finishing their mission (when they should be 
+getting a new one).  When we watch a match from our bot, you never know what you’ll get 
+from it, and it’s almost always hilarious how confused you’re left from it.
+
+      	Throughout our iterations of bots, one of the most constant frustrations was the 
+difficulty debugging our code.  Since we wanted to work with a “role-like” system, there 
+was no easy way to determine what was going on in the visualization.  For instance, when 
+we saw a ship just sitting still next to a planet, we’d think, “Is that a harvester trying
+ to harvest?  Or maybe he was an attacker who didn’t have anything to attack? What role is
+ he exactly?”.  Then we’d have to debug roles—potentially situations that weren’t even broken
+ to begin with, but we just believe it is.  Overall, it was just a huge flaw with our system 
+using roles and merging multiple play styles, despite it being what we predicted to be the 
+most efficient.  The best solution would have been to test each individual role by itself, 
+and then slowly merge them altogether.  Even then, it’d be best done by a singular person, 
+since multiple people might make different large-scale design choices, could make it 
+difficult to merge even a single few instructions into one bot.
+
+      	Another regret looking back at it, we wish we could have given ourselves time to 
+log a decent amount of time dabbling with a machine learning bot.  The few students who 
+decided to use it, seemed to encounter relatively good success on the leaderboard, and 
+it would have been a great learning opportunity.  We think this would have been extremely
+ successful in our situation, since at first, we developed 4 quite different bots, which 
+would have benefited the development of a potential machine learning bot.
+
+       	In the end, everyone in our group had a blast, and we look forward to what Halite 
+3, next year, might entail.  As for our final Halite 2 product—well, maybe we’ll have better
+ luck next year. 
