@@ -1,5 +1,6 @@
 import Models
-
+import Globals
+import main
 """ Reading level adapter.
 
 This module allows for the increase or decrease of reading difficulty.
@@ -12,21 +13,9 @@ Authors:
 
 """
 
-# Incoming Data
-target_reading_level = ''
 
-# New Globals
-target_reading_score = Models.ReadingScoreRange()
-
-
-def change_level(transfer_data):
-    global target_reading_level
-    global target_reading_score
-
-    # Store incoming data from analysis
-    target_reading_level = transfer_data['target_reading_level']
-
-    target_reading_score = convert_reading_level_to_score(target_reading_level)
+def change_level():
+    Globals.target_reading_level = convert_reading_level_to_score(Globals.target_reading_level)
 
 
 def convert_reading_level_to_score(reading_level):

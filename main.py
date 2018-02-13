@@ -2,6 +2,7 @@ import re
 import sys
 import ChangeLevel
 import nltk
+import Globals
 from nltk.corpus import cmudict
 
 """ Reading level analyzer.
@@ -21,38 +22,26 @@ Authors:
 
 """
 
-dictionary = cmudict.dict()
-input_file = ''
-file_content = ''
-current_line_number = 0
-full_input = ''
-total_words = 0
-total_sentences = 0
-total_syllables = 0
-target_reading_level = ''
-shouldModify = False
-
 
 def get_next_line():
     """
     Looks at the global line number and file and sets the given variable to the
     data at that line
     """
-    global current_line_number
     current_line_data = ''
 
     # Open the file and loop until the requested line number is found
-    with open(input_file) as file:
+    with open(Globals.input_file) as file:
 
         for number, line in enumerate(file):
-            if number == current_line_number:
+            if number == Globals.current_line_number:
                 current_line_data = line
                 break
 
     # If the line data was updated increment the current line number
     # and return the found data
     if current_line_data:
-        current_line_number += 1
+        Globals.current_line_number += 1
         return current_line_data
     else:
         return "!!!End of File!!!"
@@ -70,7 +59,6 @@ def get_syllables(words):
     :param words: The list of words to be parsed
     :return: The total number of syllables
     """
-    global dictionary
 
     number_of_syllables = 0
 
@@ -80,7 +68,7 @@ def get_syllables(words):
                 Then take pronunciation wit the maximum syllables'''
             number_of_syllables += max(
                 [len(list(y for y in x if y[-1].isdigit()))
-                 for x in dictionary[word.lower()]])
+                 for x in Globals.dictionary[word.lower()]])
         except KeyError:
             # The cmu dictionary didn't have the word so manually parse it
             number_of_syllables += manually_parse_syllables(word)
@@ -222,14 +210,9 @@ def main():
     """
     The main function
     """
-    global full_input
-    global total_words
-    global total_sentences
-    global total_syllables
-    global file_content
 
-    with open(input_file) as file:
-        file_content = file.read()
+    with open(Globals.input_file) as file:
+        Globals.file_content = file.read()
 
     while True:
         # Parse each sentence
@@ -238,45 +221,44 @@ def main():
         if sentence == "!!!End of File!!!":
             break
 
-        full_input += sentence
+        Globals.full_input += sentence
 
         tokens = nltk.word_tokenize(sentence)
         words = strip_punctuation(tokens)
-        total_words += len(words)
+        Globals.total_words += len(words)
 
-        total_syllables += get_syllables(words)
+        Globals.total_syllables += get_syllables(words)
 
-    total_sentences = get_number_of_sentences(file_content)
+    Globals.total_sentences = get_number_of_sentences(Globals.file_content)
 
-    reading_level_score = calculate_reading_level_score(total_words,
-                                                        total_sentences,
-                                                        total_syllables)
+    reading_level_score = calculate_reading_level_score(Globals.total_words,
+                                                        Globals.total_sentences,
+                                                        Globals.total_syllables)
 
     reading_level = convert_score_to_reading_level(reading_level_score)
 
-    print("Total Sentences: " + str(total_sentences))
-    print("Total Words: " + str(total_words))
-    print("Total Syllables " + str(total_syllables))
+    print("Total Sentences: " + str(Globals.total_sentences))
+    print("Total Words: " + str(Globals.total_words))
+    print("Total Syllables " + str(Globals.total_syllables))
     print("Reading Level Score " + str(reading_level_score))
     print("Reading Level: " + str(reading_level))
 
-    if shouldModify:
-        print("Changing Reading Level to " + target_reading_level)
-        ChangeLevel.change_level(
-            {'target_reading_level': target_reading_level})
+    if Globals.shouldModify:
+        print("Changing Reading Level to " + Globals.target_reading_level)
+        ChangeLevel.change_level()
 
 
 if __name__ == "__main__":
-
+    
     # Check for an input file
     if len(sys.argv) == 2:
         # Analyze reading level data
-        input_file = sys.argv[1]
+        Globals.input_file = sys.argv[1]
     elif len(sys.argv) == 3:
         # Analyze reading data and modify to reach target
-        input_file = sys.argv[1]
-        shouldModify = True
-        target_reading_level = sys.argv[2]
+        Globals.input_file = sys.argv[1]
+        Globals.shouldModify = True
+        Globals.target_reading_level = sys.argv[2]
     elif len(sys.argv) < 2:
         print("Too few arguments provided")
         print("On EOS Try: python3 main.py input.txt {targetLevel}")
