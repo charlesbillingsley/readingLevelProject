@@ -119,7 +119,6 @@ def strip_punctuation(tokens):
                                     words_or_digits_only_regex.match(word)]
 
     remove_contractions_regex = re.compile("\w*'\w*")
-
     # Remove all the contractions as nltk counts them as 2 words
     words_only = [word for word in words_only_with_contractions if
                   not remove_contractions_regex.match(word)]
@@ -224,6 +223,10 @@ def main():
         Globals.full_input += sentence
 
         tokens = nltk.word_tokenize(sentence)
+
+        # Update global tokens (which contains all tokens)
+        Globals.tokens += tokens
+
         words = strip_punctuation(tokens)
         Globals.total_words += len(words)
 
@@ -231,25 +234,25 @@ def main():
 
     Globals.total_sentences = get_number_of_sentences(Globals.file_content)
 
-    reading_level_score = calculate_reading_level_score(Globals.total_words,
+    Globals.reading_level_score = calculate_reading_level_score(Globals.total_words,
                                                         Globals.total_sentences,
                                                         Globals.total_syllables)
 
-    reading_level = convert_score_to_reading_level(reading_level_score)
+    reading_level = convert_score_to_reading_level(Globals.reading_level_score)
 
     print("Total Sentences: " + str(Globals.total_sentences))
     print("Total Words: " + str(Globals.total_words))
     print("Total Syllables " + str(Globals.total_syllables))
-    print("Reading Level Score " + str(reading_level_score))
+    print("Reading Level Score " + str(Globals.reading_level_score))
     print("Reading Level: " + str(reading_level))
 
-    if Globals.shouldModify:
+    if Globals.should_modify:
         print("Changing Reading Level to " + Globals.target_reading_level)
         ChangeLevel.change_level()
 
 
 if __name__ == "__main__":
-    
+
     # Check for an input file
     if len(sys.argv) == 2:
         # Analyze reading level data
@@ -257,7 +260,7 @@ if __name__ == "__main__":
     elif len(sys.argv) == 3:
         # Analyze reading data and modify to reach target
         Globals.input_file = sys.argv[1]
-        Globals.shouldModify = True
+        Globals.should_modify = True
         Globals.target_reading_level = sys.argv[2]
     elif len(sys.argv) < 2:
         print("Too few arguments provided")

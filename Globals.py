@@ -10,11 +10,12 @@ full_input = ''
 total_words = 0
 total_sentences = 0
 total_syllables = 0
-target_reading_level = ''
-shouldModify = False
+tokens = []
+reading_level_score = 0
 
 # ChangeLevel Globals
 target_reading_level = ''
 target_reading_score = Models.ReadingScoreRange()
-
+target_reading_level = ''
+should_modify = False
 
