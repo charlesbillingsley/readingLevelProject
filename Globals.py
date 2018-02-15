@@ -18,4 +18,5 @@ target_reading_level = ''
 target_reading_score = Models.ReadingScoreRange()
 target_reading_level = ''
 should_modify = False
+full_output = ''
 
