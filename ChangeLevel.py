@@ -88,29 +88,92 @@ def adjust_syllables(should_raise):
     print("Finding synonyms")
     # See about tokenizing all words to keep context (ie love as verb vs adverb)
     # Either disambiguate words automatically (as below) or use http://www.nltk.org/howto/wordnet.html
-    target_syllables_per_sentance = calculate_needed_syllables()
-    temp_sentance = ''
-    sentances = nltk.sent_tokenize(Globals.full_output)
+    target_syllables_per_sentence = calculate_needed_syllables()
+    temp_sentence = ''
+    sentences = nltk.sent_tokenize(Globals.full_output)
     # Todo figure out a way to retain newlines
     # Replace current output completly for testing
     Globals.full_output = ''
-    for sentance in sentances:
-        tokens = pywsd.disambiguate(sentance)
-        sentance_syllables = main.get_syllables(main.strip_punctuation(nltk.word_tokenize(sentance)))
+    for sentence in sentences:
+        tokens = pywsd.disambiguate(sentence)
+        sentence_syllables = main.get_syllables(main.strip_punctuation(nltk.word_tokenize(sentence)))
         for token in tokens:
             # Token[0] = word, Token[1] = synset
             synset = token[1]
-            if synset and ((should_raise and sentance_syllables < target_syllables_per_sentance) or (
-                    not should_raise and sentance_syllables > target_syllables_per_sentance)):
+            if synset and ((should_raise and sentence_syllables < target_syllables_per_sentence) or (
+                    not should_raise and sentence_syllables > target_syllables_per_sentence)):
                 # If token has synonyms and sentence is not beyond sentence syllable target
                 matched_synonym = max(synset.lemma_names(), key=main.get_syllables) if should_raise else min(
                     synset.lemma_names(), key=main.get_syllables)
-                temp_sentance += " " + matched_synonym
+                temp_sentence += " " + matched_synonym
             else:
-                temp_sentance += " " + token[0]
-        Globals.full_output += "\n" + temp_sentance
-        temp_sentance = ''
+                temp_sentence += " " + token[0]
+        Globals.full_output += "\n" + temp_sentence
+        temp_sentence = ''
 
+
+def adjust_sentences(should_raise):
+    print("Changing Sentence Lengths")
+    sentences = nltk.sent_tokenize(Globals.full_output)
+    # Replace current output completely for testing
+    Globals.full_output = ''
+    new_sentence = ""
+    if should_raise:  # Going to make sentences longer.
+        changed_recently = False  # Keeps track if we just changed one of the last two sentences.
+        for sen_index, sentence in enumerate(sentences):
+            tokens = pywsd.disambiguate(sentence)
+            if not changed_recently:
+                current_sentence_end = tokens[len(tokens) - 1][
+                    0]  # Get the punctuation of the end of the sentence (e.g. ! ? .)
+                if sen_index < (len(
+                        sentences) - 1) and current_sentence_end == ".":  # If there's another sentence, and we're ending in a period, just change it.
+                    for tok_index, token in enumerate(tokens):
+                        if tok_index != (len(tokens) - 1):  # If we're not at the end, just go as normal.
+                            new_sentence += " " + token[0]
+                        else:
+                            new_sentence += ";"
+                    changed_recently = True
+            else:
+                for tok_index, token in enumerate(tokens):
+                    if tok_index == 0:
+                        new_sentence += " " + token[0].lower()
+                    else:
+                        new_sentence += " " + token[0]
+
+                Globals.full_output += "\n" + new_sentence
+                new_sentence = ""
+
+                changed_recently = False  # Change back after we pass the sentences we just modified.
+    else:  # Going to make sentences shorter.
+        skip_word = False  # Will keep track if we need to skip a word due to resizing.
+        first_word = False  # Will keep track if we need to capitalize the first word of a sentence.
+        for sentence in sentences:
+            tokens = pywsd.disambiguate(sentence)
+            for tok_index, token in enumerate(tokens):
+                if not skip_word:
+                    # If we have ";", then replace with period.
+                    if token[0] == ";":
+                        Globals.full_output += new_sentence + ".\n"
+                        new_sentence = ""
+                        first_word = True
+                    # If we have "___, and", "___, or", "___, but", or "___, however", replace with period.
+                    elif (tok_index + 1 < len(tokens) and token[0] == "," and
+                          (tokens[tok_index + 1][0].lower() == "and" or tokens[tok_index + 1][0].lower() == "or" or
+                           tokens[tok_index + 1][0].lower() == "but" or tokens[tok_index + 1][0].lower() == "however")):
+                        Globals.full_output += new_sentence + ".\n"
+                        new_sentence = ""
+                        skip_word = True  # Skip the "and", "or", "but", or "however".
+                        first_word = True
+                    else:
+                        if first_word:
+                            new_sentence += " " + token[0].capitalize()
+                            first_word = False
+                        else:
+                            new_sentence += " " + token[0]
+                else:
+                    skip_word = False  # Change back, after we skipped.
+            Globals.full_output += new_sentence + "\n"
+            new_sentence = ""
 
 def acceptable_score(score):
     return Globals.target_reading_score.low_score <= score <= Globals.target_reading_score.high_score
