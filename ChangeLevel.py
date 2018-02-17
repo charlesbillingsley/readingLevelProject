@@ -157,7 +157,8 @@ def adjust_sentences(should_raise):
                         new_sentence = ""
                         first_word = True
                     # If we have "___, and", "___, or", "___, but", or "___, however", replace with period.
-                    elif (tok_index + 1 < len(tokens) and token[0] == "," and
+                    # Also checks to make sure sentence isn't like: "Is it sunny, cold, or windy?"
+                    elif (tok_index + 1 < len(tokens) and token[0] == "," and (tok_index + 5) < len(tokens) and
                           (tokens[tok_index + 1][0].lower() == "and" or tokens[tok_index + 1][0].lower() == "or" or
                            tokens[tok_index + 1][0].lower() == "but" or tokens[tok_index + 1][0].lower() == "however")):
                         Globals.full_output += new_sentence + ".\n"
