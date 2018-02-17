@@ -4,6 +4,9 @@ import main
 import math
 import re
 import Contractions
+import nltk
+import pywsd
+from nltk.corpus import wordnet
 
 """ Reading level adapter.
 
@@ -40,8 +43,7 @@ def change_level():
             print("New Reading level score " + str(estimated_score))
             print("Score is within target range")
         else:
-            print("Attempting to replace with synonyms")
-
+            adjust_syllables(should_raise)
         # Write output file
         output_file = open("output.txt", "w")
         output_file.write(Globals.full_output)
@@ -82,8 +84,46 @@ def adjust_contractions(should_raise):
     return (-1 * total_contractions) if should_raise else total_contractions
 
 
+def adjust_syllables(should_raise):
+    print("Finding synonyms")
+    # See about tokenizing all words to keep context (ie love as verb vs adverb)
+    # Either disambiguate words automatically (as below) or use http://www.nltk.org/howto/wordnet.html
+    target_syllables_per_sentance = calculate_needed_syllables()
+    temp_sentance = ''
+    sentances = nltk.sent_tokenize(Globals.full_output)
+    # Todo figure out a way to retain newlines
+    # Replace current output completly for testing
+    Globals.full_output = ''
+    for sentance in sentances:
+        tokens = pywsd.disambiguate(sentance)
+        sentance_syllables = main.get_syllables(main.strip_punctuation(nltk.word_tokenize(sentance)))
+        for token in tokens:
+            # Token[0] = word, Token[1] = synset
+            synset = token[1]
+            if synset and ((should_raise and sentance_syllables < target_syllables_per_sentance) or (
+                    not should_raise and sentance_syllables > target_syllables_per_sentance)):
+                # If token has synonyms and sentence is not beyond sentence syllable target
+                matched_synonym = max(synset.lemma_names(), key=main.get_syllables) if should_raise else min(
+                    synset.lemma_names(), key=main.get_syllables)
+                temp_sentance += " " + matched_synonym
+            else:
+                temp_sentance += " " + token[0]
+        Globals.full_output += "\n" + temp_sentance
+        temp_sentance = ''
+
+
 def acceptable_score(score):
     return Globals.target_reading_score.low_score <= score <= Globals.target_reading_score.high_score
+
+
+def calculate_needed_syllables():
+    # a = target score
+    #
+    target_score = (Globals.target_reading_score.high_score + Globals.target_reading_score.low_score) / 2
+    syllables_needed = -1 * (Globals.total_words * (
+            (200 * target_score - 41367) * Globals.total_sentences + 203 * Globals.total_words)) / (
+                               16920 * Globals.total_sentences)
+    return syllables_needed / Globals.total_sentences
 
 
 def calculate_needed_contractions():
