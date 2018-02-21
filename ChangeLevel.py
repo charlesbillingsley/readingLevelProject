@@ -1,8 +1,6 @@
 import Models
 import Globals
 import main
-import math
-import re
 import Contractions
 import nltk
 import pywsd
@@ -22,35 +20,20 @@ Authors:
 
 
 def change_level():
-    Globals.target_reading_score = convert_reading_level_to_score(Globals.target_reading_level)
-    if acceptable_score(Globals.reading_level_score):
-        # Score is already within acceptable range
-        print('Text is within target range')
-    else:
-        # Need to adjust score
-        # start by adjusting contractions
-        # Is the current score greater than the highest score in range?
-        # (I.e is it below the lowest value for that grade)
-        should_raise = Globals.reading_level_score > Globals.target_reading_score.high_score
-        print("Adjusting Contractions")
-        net_word_change = adjust_contractions(should_raise)
-        # Estimated score is based on the estimate that expanding/shrinking a contraction
-        # has a net change of 1 word and 1 syllable
-        estimated_score = main.calculate_reading_level_score(Globals.total_words + net_word_change,
-                                                             Globals.total_sentences,
-                                                             Globals.total_syllables + net_word_change)
-        if acceptable_score(estimated_score):
-            print("New Reading level score " + str(estimated_score))
-            print("Score is within target range")
-        else:
-            adjust_syllables(should_raise)
-        # Write output file
-        output_file = open("output.txt", "w")
-        output_file.write(Globals.full_output)
-        output_file.close()
+    # Make the text as difficult as we can, or as easy as we can.
+    should_raise = Globals.target_raise
+    adjust_contractions(should_raise)
+    adjust_syllables(should_raise)
+    adjust_sentences(should_raise)
+    # Write output file
+    output_file = open("output.txt", "w")
+    output_file.write(Globals.full_output)
+    output_file.close()
+    print("The change is complete!")
 
 
 def adjust_contractions(should_raise):
+    print("Adjusting Contractions")
     total_contractions = 0
     Globals.full_output = Globals.full_input
     if should_raise:
@@ -85,10 +68,9 @@ def adjust_contractions(should_raise):
 
 
 def adjust_syllables(should_raise):
-    print("Finding synonyms")
+    print("Finding Synonyms")
     # See about tokenizing all words to keep context (ie love as verb vs adverb)
     # Either disambiguate words automatically (as below) or use http://www.nltk.org/howto/wordnet.html
-    target_syllables_per_sentence = calculate_needed_syllables()
     temp_sentence = ''
     sentences = nltk.sent_tokenize(Globals.full_output)
     # Todo figure out a way to retain newlines
@@ -96,13 +78,11 @@ def adjust_syllables(should_raise):
     Globals.full_output = ''
     for sentence in sentences:
         tokens = pywsd.disambiguate(sentence)
-        sentence_syllables = main.get_syllables(main.strip_punctuation(nltk.word_tokenize(sentence)))
         for token in tokens:
             # Token[0] = word, Token[1] = synset
             synset = token[1]
-            if synset and ((should_raise and sentence_syllables < target_syllables_per_sentence) or (
-                    not should_raise and sentence_syllables > target_syllables_per_sentence)):
-                # If token has synonyms and sentence is not beyond sentence syllable target
+            if synset:
+                # If token has synonyms
                 matched_synonym = max(synset.lemma_names(), key=main.get_syllables) if should_raise else min(
                     synset.lemma_names(), key=main.get_syllables)
                 temp_sentence += " " + matched_synonym
@@ -123,10 +103,10 @@ def adjust_sentences(should_raise):
         for sen_index, sentence in enumerate(sentences):
             tokens = pywsd.disambiguate(sentence)
             if not changed_recently:
-                current_sentence_end = tokens[len(tokens) - 1][
-                    0]  # Get the punctuation of the end of the sentence (e.g. ! ? .)
-                if sen_index < (len(
-                        sentences) - 1) and current_sentence_end == ".":  # If there's another sentence, and we're ending in a period, just change it.
+                # Get the punctuation of the end of the sentence (e.g. ! ? .)
+                current_sentence_end = tokens[len(tokens) - 1][0]
+                # If there's another sentence, and we're ending in a period, just change it.
+                if sen_index < (len(sentences) - 1) and current_sentence_end == ".":
                     for tok_index, token in enumerate(tokens):
                         if tok_index != (len(tokens) - 1):  # If we're not at the end, just go as normal.
                             new_sentence += " " + token[0]
@@ -175,60 +155,3 @@ def adjust_sentences(should_raise):
                     skip_word = False  # Change back, after we skipped.
             Globals.full_output += new_sentence + "\n"
             new_sentence = ""
-
-def acceptable_score(score):
-    return Globals.target_reading_score.low_score <= score <= Globals.target_reading_score.high_score
-
-
-def calculate_needed_syllables():
-    # a = target score
-    #
-    target_score = (Globals.target_reading_score.high_score + Globals.target_reading_score.low_score) / 2
-    syllables_needed = -1 * (Globals.total_words * (
-            (200 * target_score - 41367) * Globals.total_sentences + 203 * Globals.total_words)) / (
-                               16920 * Globals.total_sentences)
-    return syllables_needed / Globals.total_sentences
-
-
-def calculate_needed_contractions():
-    target_score = (Globals.target_reading_score.high_score + Globals.target_reading_score.low_score) / 2
-
-    # Below are two candidate roots of the equation which determine number of words needed to achieve a certain reading score
-    # Note: these can throw errors (due to root of 0) which seem to happen when trying to make major changes to reading level
-    # candidate = -1 * ((-206835 * Globals.total_sentences) + (1000 * target_score * Globals.total_sentences) -
-    #                  math.sqrt(((206835 * Globals.total_sentences) -
-    #                             (1000 * target_score * Globals.total_sentences)) ** 2 -
-    #                            (343476000 * Globals.total_sentences * Globals.total_syllables))) / 2030
-    words_needed = -1 * ((-206835 * Globals.total_sentences) + (1000 * target_score * Globals.total_sentences) +
-                         math.sqrt(((206835 * Globals.total_sentences) -
-                                    (1000 * target_score * Globals.total_sentences)) ** 2 -
-                                   (343476000 * Globals.total_sentences * Globals.total_syllables))) / 2030
-    word_difference = Globals.total_words - words_needed
-    # Determine if we need to add or remove words (increase or decrease complexity)
-    # Also check total number of contractions present.
-    # either expand or contract them until word difference is achieved
-
-
-def convert_reading_level_to_score(reading_level):
-    """
-    Converts the reading level from the Flesch-Kincaid Reading Ease Formula
-    into the equivalent reading score.
-
-    :param reading_level: The grade level
-    :return: The score range associated with the reading level
-    """
-    if reading_level == '5':
-        return Models.ReadingScoreRange(90, 100)
-    elif reading_level == '6':
-        return Models.ReadingScoreRange(80, 90)
-    elif reading_level == '7':
-        return Models.ReadingScoreRange(70, 80)
-    elif reading_level == '8' or reading_level == '9':
-        return Models.ReadingScoreRange(60, 70)
-    elif reading_level == '10' or reading_level == '11' \
-            or reading_level == '12':
-        return Models.ReadingScoreRange(50, 60)
-    elif reading_level == 'College':
-        return Models.ReadingScoreRange(30, 50)
-    elif reading_level == 'CollegeGrad':
-        return Models.ReadingScoreRange(0, 30)

@@ -14,8 +14,7 @@ tokens = []
 reading_level_score = 0
 
 # ChangeLevel Globals
-target_reading_level = '5'
-target_reading_score = Models.ReadingScoreRange()
-should_modify = True
+target_raise = False  # True to make more difficult, False to make easier.
+should_modify = False
 full_output = ''
 

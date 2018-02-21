@@ -247,7 +247,10 @@ def main():
     print("Reading Level: " + str(reading_level))
 
     if Globals.should_modify:
-        print("Changing Reading Level to " + Globals.target_reading_level)
+        if Globals.target_raise:
+            print("About to make the reading more difficult!")
+        else:
+            print("About to make the reading easier!")
         ChangeLevel.change_level()
 
 
