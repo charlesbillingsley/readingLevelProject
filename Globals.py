@@ -1,6 +1,18 @@
 import Models
 from nltk.corpus import cmudict
 
+""" Global variables for the reading level project.
+
+This module holds the global variables for the project.
+
+Authors:
+    Charles Billingsley
+    Josh Getter
+    Adam Stewart
+    Josh Techentin
+
+"""
+
 # Main Globals
 dictionary = cmudict.dict()
 input_file = ''

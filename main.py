@@ -175,7 +175,7 @@ def calculate_reading_level_score(number_of_words, number_of_sentences,
 
     return first_flesch_kincaid_constant - second_flesch_kincaid_constant * (
         number_of_words / number_of_sentences) \
-        - third_flesch_kincaid_constant * (
+           - third_flesch_kincaid_constant * (
         number_of_syllables / number_of_words)
 
 
@@ -249,7 +249,7 @@ def main():
 
 
 if __name__ == "__main__":
-    
+
     # Check for an input file
     if len(sys.argv) == 2:
         # Analyze reading level data
