@@ -78,8 +78,12 @@ def adjust_syllables(should_raise):
     Globals.full_output = ''
     for sentence in sentences:
         tokens = pywsd.disambiguate(sentence)
-        for token in tokens:
+        for index, token in enumerate(tokens):
             # Token[0] = word, Token[1] = synset
+            if index + 1 < len(tokens):
+                if Contractions.contractions_as_key.get(tokens[index][0] + tokens[index + 1][0]):
+                    temp_sentence += " " + token[0]
+                    continue
             synset = token[1]
             if synset:
                 # If token has synonyms

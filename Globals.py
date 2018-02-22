@@ -14,7 +14,7 @@ tokens = []
 reading_level_score = 0
 
 # ChangeLevel Globals
-target_raise = False  # True to make more difficult, False to make easier.
-should_modify = False
+target_raise = True  # True to make more difficult, False to make easier.
+should_modify = True
 full_output = ''
 
