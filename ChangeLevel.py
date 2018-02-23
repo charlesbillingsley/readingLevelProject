@@ -66,33 +66,33 @@ def adjust_contractions(should_raise):
     # Return net result in words added/removed
     return (-1 * total_contractions) if should_raise else total_contractions
 
-
+# Adjust syllables to either raise or lower difficulty
 def adjust_syllables(should_raise):
     print("Finding Synonyms")
-    # See about tokenizing all words to keep context (ie love as verb vs adverb)
-    # Either disambiguate words automatically (as below) or use http://www.nltk.org/howto/wordnet.html
+    # disambiguate words automatically
     temp_sentence = ''
     sentences = nltk.sent_tokenize(Globals.full_output)
-    # Todo figure out a way to retain newlines
-    # Replace current output completly for testing
     Globals.full_output = ''
     for sentence in sentences:
+        # Get tokens from sentance
         tokens = pywsd.disambiguate(sentence)
         for index, token in enumerate(tokens):
-            # Token[0] = word, Token[1] = synset
             if index + 1 < len(tokens):
                 if Contractions.contractions_as_key.get(tokens[index][0] + tokens[index + 1][0]):
+                    # Don't find synonyms for contractions
                     temp_sentence += " " + token[0]
                     continue
             synset = token[1]
             if synset:
-                # If token has synonyms
+                # If token has synonyms -> Get max or min syllable'd synonym
                 matched_synonym = max(synset.lemma_names(), key=main.get_syllables) if should_raise else min(
                     synset.lemma_names(), key=main.get_syllables)
                 temp_sentence += " " + matched_synonym
             else:
+                # Token has no synonyms so just append it as is.
                 temp_sentence += " " + token[0]
         Globals.full_output += "\n" + temp_sentence
+        # Reset local temp sentence var for next loop.
         temp_sentence = ''
 
 
