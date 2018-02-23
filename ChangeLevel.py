@@ -20,6 +20,10 @@ Authors:
 
 
 def change_level():
+    """
+    Changes the reading level to a new level going up
+    or down based on the global variables.
+    """
     # Make the text as difficult as we can, or as easy as we can.
     should_raise = Globals.target_raise
     adjust_contractions(should_raise)
@@ -33,6 +37,11 @@ def change_level():
 
 
 def adjust_contractions(should_raise):
+    """
+    Contracts or elongates the contractions in the text.
+    :param should_raise: whether or not the reading level should be raised
+    :return: net result in words added/removed
+    """
     print("Adjusting Contractions")
     total_contractions = 0
     Globals.full_output = Globals.full_input
@@ -41,40 +50,53 @@ def adjust_contractions(should_raise):
         for phrase in Contractions.expanded_as_key:
             # Count lowercase version of phrase + phrase with capitalized first letter
             total_contractions += Globals.full_output.count(phrase) + \
-                                  Globals.full_output.count(phrase[0].upper() + phrase[1:])
+                                  Globals.full_output.count(
+                                      phrase[0].upper() + phrase[1:])
             # Replace lowercase phrase
-            Globals.full_output = Globals.full_output.replace(phrase, Contractions.expanded_as_key[phrase])
+            Globals.full_output = Globals.full_output.replace(phrase,
+                                                              Contractions.expanded_as_key[
+                                                                  phrase])
             # Replace phrase with first letter capitalized (ex. Can not -> Can't)
-            Globals.full_output = Globals.full_output.replace(phrase[0].upper() +
-                                                              phrase[1:],
-                                                              Contractions.expanded_as_key[phrase][0].upper() +
-                                                              Contractions.expanded_as_key[phrase][1:])
+            Globals.full_output = Globals.full_output.replace(
+                phrase[0].upper() +
+                phrase[1:],
+                Contractions.expanded_as_key[phrase][0].upper() +
+                Contractions.expanded_as_key[phrase][1:])
     else:
         # Lowering difficulty -> expand contractions
         for contraction in Contractions.contractions_as_key:
             # Count lowercase version of contraction + contractions with capitalized first letter
             total_contractions += Globals.full_output.count(contraction) + \
-                                  Globals.full_output.count(contraction[0].upper() + contraction[1:])
+                                  Globals.full_output.count(
+                                      contraction[0].upper() + contraction[1:])
             # Replace lowercase contraction
             Globals.full_output = Globals.full_output.replace(contraction,
-                                                              Contractions.contractions_as_key[contraction])
+                                                              Contractions.contractions_as_key[
+                                                                  contraction])
             # Replace contractions with first letter capitalized (ex. Can't -> Can not)
-            Globals.full_output = Globals.full_output.replace(contraction[0].upper() +
-                                                              contraction[1:],
-                                                              Contractions.contractions_as_key[contraction][0].upper() +
-                                                              Contractions.contractions_as_key[contraction][1:])
+            Globals.full_output = Globals.full_output.replace(
+                contraction[0].upper() +
+                contraction[1:],
+                Contractions.contractions_as_key[contraction][0].upper() +
+                Contractions.contractions_as_key[contraction][1:])
     # Return net result in words added/removed
     return (-1 * total_contractions) if should_raise else total_contractions
 
 
 def adjust_syllables(should_raise):
+    """
+    Finds synonyms for each word with more or less syllables
+    depending on if the score is being raised or lowered.
+
+    :param should_raise: should_raise: whether or not
+                         the reading level should be raised
+    """
     print("Finding Synonyms")
     # See about tokenizing all words to keep context (ie love as verb vs adverb)
     # Either disambiguate words automatically (as below) or use http://www.nltk.org/howto/wordnet.html
     temp_sentence = ''
     sentences = nltk.sent_tokenize(Globals.full_output)
-    # Todo figure out a way to retain newlines
-    # Replace current output completly for testing
+    # Replace current output completely for testing
     Globals.full_output = ''
     for sentence in sentences:
         tokens = pywsd.disambiguate(sentence)
@@ -83,7 +105,8 @@ def adjust_syllables(should_raise):
             synset = token[1]
             if synset:
                 # If token has synonyms
-                matched_synonym = max(synset.lemma_names(), key=main.get_syllables) if should_raise else min(
+                matched_synonym = max(synset.lemma_names(),
+                                      key=main.get_syllables) if should_raise else min(
                     synset.lemma_names(), key=main.get_syllables)
                 temp_sentence += " " + matched_synonym
             else:
@@ -93,6 +116,12 @@ def adjust_syllables(should_raise):
 
 
 def adjust_sentences(should_raise):
+    """
+    Adjusts the length of sentences based on if the
+    score is being raised or lowered.
+    :param should_raise: should_raise: whether or not
+                         the reading level should be raised
+    """
     print("Changing Sentence Lengths")
     sentences = nltk.sent_tokenize(Globals.full_output)
     # Replace current output completely for testing
@@ -106,9 +135,12 @@ def adjust_sentences(should_raise):
                 # Get the punctuation of the end of the sentence (e.g. ! ? .)
                 current_sentence_end = tokens[len(tokens) - 1][0]
                 # If there's another sentence, and we're ending in a period, just change it.
-                if sen_index < (len(sentences) - 1) and current_sentence_end == ".":
+                if sen_index < (
+                            len(
+                                sentences) - 1) and current_sentence_end == ".":
                     for tok_index, token in enumerate(tokens):
-                        if tok_index != (len(tokens) - 1):  # If we're not at the end, just go as normal.
+                        if tok_index != (len(
+                                tokens) - 1):  # If we're not at the end, just go as normal.
                             new_sentence += " " + token[0]
                         else:
                             new_sentence += ";"
@@ -138,9 +170,15 @@ def adjust_sentences(should_raise):
                         first_word = True
                     # If we have "___, and", "___, or", "___, but", or "___, however", replace with period.
                     # Also checks to make sure sentence isn't like: "Is it sunny, cold, or windy?"
-                    elif (tok_index + 1 < len(tokens) and token[0] == "," and (tok_index + 5) < len(tokens) and
-                          (tokens[tok_index + 1][0].lower() == "and" or tokens[tok_index + 1][0].lower() == "or" or
-                           tokens[tok_index + 1][0].lower() == "but" or tokens[tok_index + 1][0].lower() == "however")):
+                    elif (tok_index + 1 < len(tokens) and token[0] == "," and (
+                                tok_index + 5) < len(tokens) and
+                              (tokens[tok_index + 1][0].lower() == "and" or
+                                       tokens[tok_index + 1][
+                                           0].lower() == "or" or
+                                       tokens[tok_index + 1][
+                                           0].lower() == "but" or
+                                       tokens[tok_index + 1][
+                                           0].lower() == "however")):
                         Globals.full_output += new_sentence + ".\n"
                         new_sentence = ""
                         skip_word = True  # Skip the "and", "or", "but", or "however".

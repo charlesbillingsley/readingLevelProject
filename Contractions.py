@@ -1,3 +1,16 @@
+""" Contraction dictionaries.
+
+This module holds two dictionaries. One with the contractions as the key
+and one with the full expanded words as the key.
+
+Authors:
+    Charles Billingsley
+    Josh Getter
+    Adam Stewart
+    Josh Techentin
+
+"""
+
 contractions_as_key = {
   "ain't": "am not",
   "aren't": "are not",

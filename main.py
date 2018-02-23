@@ -207,7 +207,7 @@ def convert_score_to_reading_level(score):
 
 def main():
     """
-    The main function
+    The main function which runs the program
     """
 
     with open(Globals.input_file) as file:
