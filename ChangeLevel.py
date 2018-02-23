@@ -66,6 +66,7 @@ def adjust_contractions(should_raise):
     # Return net result in words added/removed
     return (-1 * total_contractions) if should_raise else total_contractions
 
+
 # Adjust syllables to either raise or lower difficulty
 def adjust_syllables(should_raise):
     print("Finding Synonyms")
@@ -74,7 +75,7 @@ def adjust_syllables(should_raise):
     sentences = nltk.sent_tokenize(Globals.full_output)
     Globals.full_output = ''
     for sentence in sentences:
-        # Get tokens from sentance
+        # Get tokens from sentence
         tokens = pywsd.disambiguate(sentence)
         for index, token in enumerate(tokens):
             if index + 1 < len(tokens):
@@ -118,6 +119,8 @@ def adjust_sentences(should_raise):
                             new_sentence += ";"
                     changed_recently = True
             else:
+                # This basically makes sure after we combined two sentences, the start of the second one starts
+                # with a lowercase. (e.g. Sentence_one. Sentence_two. -> Sentence_one; sentence_two.)
                 for tok_index, token in enumerate(tokens):
                     if tok_index == 0:
                         new_sentence += " " + token[0].lower()
@@ -126,8 +129,8 @@ def adjust_sentences(should_raise):
 
                 Globals.full_output += "\n" + new_sentence
                 new_sentence = ""
-
                 changed_recently = False  # Change back after we pass the sentences we just modified.
+
     else:  # Going to make sentences shorter.
         skip_word = False  # Will keep track if we need to skip a word due to resizing.
         first_word = False  # Will keep track if we need to capitalize the first word of a sentence.
@@ -145,12 +148,12 @@ def adjust_sentences(should_raise):
                     elif (tok_index + 1 < len(tokens) and token[0] == "," and (tok_index + 5) < len(tokens) and
                           (tokens[tok_index + 1][0].lower() == "and" or tokens[tok_index + 1][0].lower() == "or" or
                            tokens[tok_index + 1][0].lower() == "but" or tokens[tok_index + 1][0].lower() == "however")):
-                        Globals.full_output += new_sentence + ".\n"
+                        Globals.full_output += new_sentence + ".\n"  # End sentence early.
                         new_sentence = ""
                         skip_word = True  # Skip the "and", "or", "but", or "however".
-                        first_word = True
-                    else:
-                        if first_word:
+                        first_word = True  # Starting a new sentence in the middle of an old one.
+                    else:  # Comes here if there's no sentence to shorten quite yet.
+                        if first_word:  # If we had cut a sentence short earlier, capitalize the start of the new one.
                             new_sentence += " " + token[0].capitalize()
                             first_word = False
                         else:

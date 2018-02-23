@@ -7,6 +7,8 @@ input_file = ''
 file_content = ''
 current_line_number = 0
 full_input = ''
+
+# Data for calculating the reading score.
 total_words = 0
 total_sentences = 0
 total_syllables = 0
@@ -15,6 +17,6 @@ reading_level_score = 0
 
 # ChangeLevel Globals
 target_raise = True  # True to make more difficult, False to make easier.
-should_modify = True
+should_modify = True  # True to attempt modifications to output.txt, False to not.
 full_output = ''
 
