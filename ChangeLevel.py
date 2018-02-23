@@ -92,26 +92,30 @@ def adjust_syllables(should_raise):
                          the reading level should be raised
     """
     print("Finding Synonyms")
-    # See about tokenizing all words to keep context (ie love as verb vs adverb)
-    # Either disambiguate words automatically (as below) or use http://www.nltk.org/howto/wordnet.html
+    # disambiguate words automatically
     temp_sentence = ''
     sentences = nltk.sent_tokenize(Globals.full_output)
-    # Replace current output completely for testing
     Globals.full_output = ''
     for sentence in sentences:
+        # Get tokens from sentence
         tokens = pywsd.disambiguate(sentence)
-        for token in tokens:
-            # Token[0] = word, Token[1] = synset
+        for index, token in enumerate(tokens):
+            if index + 1 < len(tokens):
+                if Contractions.contractions_as_key.get(tokens[index][0] + tokens[index + 1][0]):
+                    # Don't find synonyms for contractions
+                    temp_sentence += " " + token[0]
+                    continue
             synset = token[1]
             if synset:
-                # If token has synonyms
-                matched_synonym = max(synset.lemma_names(),
-                                      key=main.get_syllables) if should_raise else min(
+                # If token has synonyms -> Get max or min syllable'd synonym
+                matched_synonym = max(synset.lemma_names(), key=main.get_syllables) if should_raise else min(
                     synset.lemma_names(), key=main.get_syllables)
                 temp_sentence += " " + matched_synonym
             else:
+                # Token has no synonyms so just append it as is.
                 temp_sentence += " " + token[0]
         Globals.full_output += "\n" + temp_sentence
+        # Reset local temp sentence var for next loop.
         temp_sentence = ''
 
 
@@ -135,17 +139,16 @@ def adjust_sentences(should_raise):
                 # Get the punctuation of the end of the sentence (e.g. ! ? .)
                 current_sentence_end = tokens[len(tokens) - 1][0]
                 # If there's another sentence, and we're ending in a period, just change it.
-                if sen_index < (
-                            len(
-                                sentences) - 1) and current_sentence_end == ".":
+                if sen_index < (len(sentences) - 1) and current_sentence_end == ".":
                     for tok_index, token in enumerate(tokens):
-                        if tok_index != (len(
-                                tokens) - 1):  # If we're not at the end, just go as normal.
+                        if tok_index != (len(tokens) - 1):  # If we're not at the end, just go as normal.
                             new_sentence += " " + token[0]
                         else:
                             new_sentence += ";"
                     changed_recently = True
             else:
+                # This basically makes sure after we combined two sentences, the start of the second one starts
+                # with a lowercase. (e.g. Sentence_one. Sentence_two. -> Sentence_one; sentence_two.)
                 for tok_index, token in enumerate(tokens):
                     if tok_index == 0:
                         new_sentence += " " + token[0].lower()
@@ -154,8 +157,8 @@ def adjust_sentences(should_raise):
 
                 Globals.full_output += "\n" + new_sentence
                 new_sentence = ""
-
                 changed_recently = False  # Change back after we pass the sentences we just modified.
+
     else:  # Going to make sentences shorter.
         skip_word = False  # Will keep track if we need to skip a word due to resizing.
         first_word = False  # Will keep track if we need to capitalize the first word of a sentence.
@@ -170,21 +173,15 @@ def adjust_sentences(should_raise):
                         first_word = True
                     # If we have "___, and", "___, or", "___, but", or "___, however", replace with period.
                     # Also checks to make sure sentence isn't like: "Is it sunny, cold, or windy?"
-                    elif (tok_index + 1 < len(tokens) and token[0] == "," and (
-                                tok_index + 5) < len(tokens) and
-                              (tokens[tok_index + 1][0].lower() == "and" or
-                                       tokens[tok_index + 1][
-                                           0].lower() == "or" or
-                                       tokens[tok_index + 1][
-                                           0].lower() == "but" or
-                                       tokens[tok_index + 1][
-                                           0].lower() == "however")):
-                        Globals.full_output += new_sentence + ".\n"
+                    elif (tok_index + 1 < len(tokens) and token[0] == "," and (tok_index + 5) < len(tokens) and
+                          (tokens[tok_index + 1][0].lower() == "and" or tokens[tok_index + 1][0].lower() == "or" or
+                           tokens[tok_index + 1][0].lower() == "but" or tokens[tok_index + 1][0].lower() == "however")):
+                        Globals.full_output += new_sentence + ".\n"  # End sentence early.
                         new_sentence = ""
                         skip_word = True  # Skip the "and", "or", "but", or "however".
-                        first_word = True
-                    else:
-                        if first_word:
+                        first_word = True  # Starting a new sentence in the middle of an old one.
+                    else:  # Comes here if there's no sentence to shorten quite yet.
+                        if first_word:  # If we had cut a sentence short earlier, capitalize the start of the new one.
                             new_sentence += " " + token[0].capitalize()
                             first_word = False
                         else:
